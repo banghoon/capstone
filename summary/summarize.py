@@ -14,7 +14,7 @@ def load_model(path='./kobart_summary'):
     return model
 
 
-def get_summary(texts, path='./kobart_summary'):
+def get_summary(texts: list, path='./kobart_summary'):
     model = load_model(path)
     tokenizer = get_kobart_tokenizer()
     outputs = []
