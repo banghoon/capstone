@@ -96,7 +96,7 @@ def crawling_news(date, path='chromedriver_94.exe'):
                         'company': comp.text,
                         'url': result.get_attribute("href"),
                         'text': res,
-                        'tokenize': tokenize.tokenizer(result.text, ['NNG', 'NNP']),
+                        'tokenize': tokenize.tokenizer(res, ['NNG', 'NNP']),
                         # 'summary': summarize.get_summary(result.text, "./summary/kobart_summary")
                     })
 
