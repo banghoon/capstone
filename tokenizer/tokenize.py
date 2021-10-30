@@ -32,7 +32,9 @@ def tokenizer(news, morph):  # news : 크롤링 기사 1개 / morph : 원하는 
     news = re.sub('[^가-힣a-zA-Z0-9]', ' ', news)
     tagger = Mecab()
     tag = tagger.pos(news)
-    news = [t[0] for t in tag if t[1] in morph]
+    news = [t[0] for t in tag if (t[1] in morph) & (len(t[0]) != 1)]
+    news = ' '.join(news)
+    news += ". "
     return news
 
 
