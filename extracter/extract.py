@@ -19,7 +19,8 @@ beta = 0.85
 max_iter = 10
 '''
 
-def keyword(data, min_count, max_length, beta, max_iter, keyword_num=1000, stopwords=stopword_list):
+
+def keyword(data, min_count, max_length, beta, max_iter, keyword_num=1000, stopwords=None):
     keywords_extractor = KRWordRank(min_count=min_count, max_length=max_length, verbose=True)
     keywords, rank, graph = keywords_extractor.extract(data, beta, max_iter)
     if stopwords:
