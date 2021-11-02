@@ -1,4 +1,7 @@
 from krwordrank.word import KRWordRank
+from eunjeon import Mecab
+import re
+import pandas as pd
 
 
 # f = open('korean_stopwords.txt', 'r', encoding='utf-8')
@@ -28,7 +31,7 @@ def keyword(data, min_count, max_length, beta, max_iter, keyword_num=1000, stopw
                           if not (word in stopwords)]
     else:
         today_keywords = [word for word, _ in sorted(keywords.items(), key=lambda x: x[1], reverse=True)[:keyword_num]]
-    return today_keywords
+    return today_keywords, keywords
 
 
 def keyword_v2(data, min_count, max_length, beta, max_iter, keyword_num=1000, today_keywords=None):
@@ -40,3 +43,30 @@ def keyword_v2(data, min_count, max_length, beta, max_iter, keyword_num=1000, to
     else:
         keywords = [word for word, _ in sorted(keywords.items(), key=lambda x: x[1], reverse=True)[:keyword_num]]
     return keywords
+
+
+def preprocessing(review):
+    tagger = Mecab()
+    total_review = ''
+    for idx in range(len(review)):
+        sentence = review[idx]
+        sentence = re.sub('\n','',sentence)
+        sentence = re.sub('\u200b','',sentence)
+        sentence = re.sub('\xa0','',sentence)
+        sentence = re.sub('([a-zA-Z])','',sentence)
+        sentence = re.sub('[ㄱ-ㅎㅏ-ㅣ]+','',sentence)
+        sentence = re.sub('[-=+,#/\?:^$.@*\"※~&%ㆍ!』\\‘|\(\)\[\]\<\>`\'…》]','',sentence)
+        if len(sentence)==0:
+            continue
+        sentence = tagger.pos(sentence) #okt.pos: 각 품사를 태깅
+        word = []
+        for i in sentence:
+            if not i[1] in ['NNG', 'NNP']: #명사가 아니면
+                continue
+            if len(i[0])==1: #글자길이가 1
+                continue
+            word.append(i[0])
+        word = ' '.join(word)
+        word += '. '
+        total_review += word
+    return total_review
