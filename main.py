@@ -1,7 +1,7 @@
 from crawler.naver_news import crawling_news
 from summary import summarize
 import pandas as pd
-
+from extracter import extract
 
 date = "20211026"
 cral = crawling_news(date)

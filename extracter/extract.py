@@ -23,7 +23,7 @@ max_iter = 10
 '''
 
 
-def keyword(data, min_count, max_length, beta, max_iter, keyword_num=1000, stopwords=None):
+def keyword(data, min_count=5, max_length=10, beta=0.85, max_iter=20, keyword_num=1000, stopwords=None):
     keywords_extractor = KRWordRank(min_count=min_count, max_length=max_length, verbose=True)
     keywords, rank, graph = keywords_extractor.extract(data, beta, max_iter)
     if stopwords:
@@ -56,14 +56,14 @@ def preprocessing(review):
         sentence = re.sub('([a-zA-Z])','',sentence)
         sentence = re.sub('[ㄱ-ㅎㅏ-ㅣ]+','',sentence)
         sentence = re.sub('[-=+,#/\?:^$.@*\"※~&%ㆍ!』\\‘|\(\)\[\]\<\>`\'…》]','',sentence)
-        if len(sentence)==0:
+        if len(sentence) == 0:
             continue
-        sentence = tagger.pos(sentence) #okt.pos: 각 품사를 태깅
+        sentence = tagger.pos(sentence)
         word = []
         for i in sentence:
-            if not i[1] in ['NNG', 'NNP']: #명사가 아니면
+            if not i[1] in ['NNG', 'NNP']:  #명사가 아니면
                 continue
-            if len(i[0])==1: #글자길이가 1
+            if len(i[0]) == 1:  #글자길이가 1
                 continue
             word.append(i[0])
         word = ' '.join(word)
