@@ -34,15 +34,15 @@ def keyword(data, min_count=5, max_length=10, beta=0.85, max_iter=20, keyword_nu
     return today_keywords, keywords
 
 
-def keyword_v2(data, min_count, max_length, beta, max_iter, keyword_num=1000, today_keywords=None):
-    keywords_extractor = KRWordRank(min_count=min_count, max_length=max_length, verbose=True)
-    keywords, rank, graph = keywords_extractor.extract(data, beta, max_iter)
-    if today_keywords:
-        keywords = [word for word, _ in sorted(keywords.items(), key=lambda x: x[1], reverse=True)[:keyword_num]
-                    if word in today_keywords]
-    else:
-        keywords = [word for word, _ in sorted(keywords.items(), key=lambda x: x[1], reverse=True)[:keyword_num]]
-    return keywords
+def keyword_extrator(data: str, rank, top=10, today_keywords=None):
+    res = {}
+    for d in data:
+        if d in today_keywords:
+           res[d] = rank[d]
+    res = sorted(res.items(), key=lambda x: -x[1])[:top]
+
+    return res
+
 
 
 def preprocessing(review):

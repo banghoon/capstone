@@ -20,11 +20,12 @@ def tokenizer(news, morph):  # news : 크롤링 기사 1개 / morph : 원하는 
     return news
 
 
-def find_last_page(url, path='C:/Users/bhkim/PycharmProjects/capstone/crawler/chromedriver/chromedriver_95.exe'):
+def find_last_page(url, path='C:/Users/R301-4/PythonPrioject/capstone/crawler/chromedriver.exe'):
     options = webdriver.ChromeOptions()
     options.add_argument('headless')
     options.add_argument('window-size=1920x1080')
     options.add_argument("disable-gpu")
+    options.add_argument("--log-level=3")
     driver = webdriver.Chrome(path, options=options)
     driver.get(url + '&page=10000')
     result = driver.find_element_by_xpath('//*[@id="main_content"]/div[3]/strong')
@@ -33,7 +34,7 @@ def find_last_page(url, path='C:/Users/bhkim/PycharmProjects/capstone/crawler/ch
     return last_page
 
 
-def crawling_news(date, path='C:/Users/bhkim/PycharmProjects/capstone/crawler/chromedriver/chromedriver_95.exe'):
+def crawling_news(date, path='C:/Users/R301-4/PythonPrioject/capstone/crawler/chromedriver.exe'):
     menu = {
         '100': '정치', '101': '경제', '102': '사회', '103': '생활/문화', '104': '세계', '105': 'IT/과학'
     }
@@ -42,10 +43,11 @@ def crawling_news(date, path='C:/Users/bhkim/PycharmProjects/capstone/crawler/ch
     options.add_argument('window-size=1920x1080')
     options.add_argument("disable-gpu")
     options.add_argument("--mute-audio")
+    options.add_argument("--log-level=3")
 
     driver = webdriver.Chrome(path, options=options)
     datalist = []
-    for path in [str(i) for i in range(100, 106)]:
+    for path in [str(i) for i in range(100, 101)]: ################################################
         url = f'https://news.naver.com/main/list.naver?mode=LSD&mid=sec&date={str(date)}&sid1={str(path)}'
         pages = int(find_last_page(url))
         for page in range(pages):
@@ -88,8 +90,8 @@ def crawling_news(date, path='C:/Users/bhkim/PycharmProjects/capstone/crawler/ch
                         'tokenize': tokenizer(res, ['NNG', 'NNP']),
                         # 'summary': summarize.get_summary(result.text, "./summary/kobart_summary")
                     })
-    pd.DataFrame(datalist).to_csv(f'C:/Users/bhkim/PycharmProjects/capstone/data/news_{date}.csv', encoding='utf-8-sig')
-    print(f'-------------------END-------------------')
+    # pd.DataFrame(datalist).to_csv(f'C:/Users/bhkim/PycharmProjects/capstone/data/news_{date}.csv', encoding='utf-8-sig')
+    print('-------------------END-------------------')
     driver.quit()
     return pd.DataFrame(datalist)
 
