@@ -23,39 +23,40 @@ max_iter = 10
 '''
 
 
-def keyword(data, min_count=5, max_length=10, beta=0.85, max_iter=20, keyword_num=1000, stopwords=None):
+def keyword(data, min_count=5, max_length=10, beta=0.85, max_iter=20, keyword_num=2000, stopwords=None):
     keywords_extractor = KRWordRank(min_count=min_count, max_length=max_length, verbose=True)
     keywords, rank, graph = keywords_extractor.extract(data, beta, max_iter)
     if stopwords:
         today_keywords = [word for word, _ in sorted(keywords.items(), key=lambda x: x[1], reverse=True)[:keyword_num]
                           if not (word in stopwords)]
     else:
-        today_keywords = [word for word, _ in sorted(keywords.items(), key=lambda x: x[1], reverse=True)[:keyword_num]]
+        today_keywords = [word for word, _ in sorted(keywords.items(), key=lambda x: x[1], reverse=True)][:keyword_num]
     return today_keywords, keywords
 
 
-def keyword_extrator(data: str, rank, top=10, today_keywords=None):
+def keyword_extrator(data, rank, top=10, today_keywords=None):
     res = {}
-    for d in data:
+    for d in data.split():
         if d in today_keywords:
            res[d] = rank[d]
     res = sorted(res.items(), key=lambda x: -x[1])[:top]
 
-    return res
+
+    return ' '.join(["#"+i[0] for i in res])
 
 
 
-def preprocessing(review):
+def preprocessing(reviews):
     tagger = Mecab()
     total_review = ''
-    for idx in range(len(review)):
-        sentence = review[idx]
-        sentence = re.sub('\n','',sentence)
-        sentence = re.sub('\u200b','',sentence)
-        sentence = re.sub('\xa0','',sentence)
-        sentence = re.sub('([a-zA-Z])','',sentence)
-        sentence = re.sub('[ㄱ-ㅎㅏ-ㅣ]+','',sentence)
-        sentence = re.sub('[-=+,#/\?:^$.@*\"※~&%ㆍ!』\\‘|\(\)\[\]\<\>`\'…》]','',sentence)
+    for review in reviews:
+        sentence = str(review)
+        sentence = re.sub('\n', ' ', sentence)
+        sentence = re.sub('\u200b', ' ', sentence)
+        sentence = re.sub('\xa0', ' ', sentence)
+        sentence = re.sub('([a-zA-Z])', ' ', sentence)
+        sentence = re.sub('[ㄱ-ㅎㅏ-ㅣ]+', ' ', sentence)
+        sentence = re.sub('[-=+,#/\?:^$.@*\"※~&%ㆍ!』\\‘|\(\)\[\]\<\>`\'…》]', ' ', sentence)
         if len(sentence) == 0:
             continue
         sentence = tagger.pos(sentence)

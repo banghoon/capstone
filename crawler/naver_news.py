@@ -20,7 +20,7 @@ def tokenizer(news, morph):  # news : 크롤링 기사 1개 / morph : 원하는 
     return news
 
 
-def find_last_page(url, path='C:/Users/R301-4/PythonPrioject/capstone/crawler/chromedriver.exe'):
+def find_last_page(url, path='C:/Users/bhkim/PycharmProjects/capstone/crawler/chromedriver/chromedriver_95.exe'):
     options = webdriver.ChromeOptions()
     options.add_argument('headless')
     options.add_argument('window-size=1920x1080')
@@ -34,7 +34,7 @@ def find_last_page(url, path='C:/Users/R301-4/PythonPrioject/capstone/crawler/ch
     return last_page
 
 
-def crawling_news(date, path='C:/Users/R301-4/PythonPrioject/capstone/crawler/chromedriver.exe'):
+def crawling_news(date, path='C:/Users/bhkim/PycharmProjects/capstone/crawler/chromedriver/chromedriver_95.exe'):
     menu = {
         '100': '정치', '101': '경제', '102': '사회', '103': '생활/문화', '104': '세계', '105': 'IT/과학'
     }
@@ -75,7 +75,7 @@ def crawling_news(date, path='C:/Users/R301-4/PythonPrioject/capstone/crawler/ch
                             res = url_res.text.replace('\n', '')
 
                         except:
-                            res = np.nan
+                            res = " "
 
                     driver.close()
                     driver.switch_to.window(driver.window_handles[0])
@@ -86,8 +86,8 @@ def crawling_news(date, path='C:/Users/R301-4/PythonPrioject/capstone/crawler/ch
                         'title': result.text,
                         'company': comp.text,
                         'url': result.get_attribute("href"),
-                        'text': res,
-                        'tokenize': tokenizer(res, ['NNG', 'NNP']),
+                        'text': str(res),
+                        'tokenize': tokenizer(str(res), ['NNG', 'NNP']),
                         # 'summary': summarize.get_summary(result.text, "./summary/kobart_summary")
                     })
     # pd.DataFrame(datalist).to_csv(f'C:/Users/bhkim/PycharmProjects/capstone/data/news_{date}.csv', encoding='utf-8-sig')
