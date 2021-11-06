@@ -2,12 +2,12 @@ from crawler.naver_news import crawling_news
 from summary import summarize
 import pandas as pd
 from extracter import extract
-import warnings
+import warnings, time
 
 
 warnings.simplefilter('ignore')
 
-
+start = time.time()
 f = open('./crawler/korean_stopwords.txt', 'r', encoding='utf-8')
 lines = f.readlines()
 stopword_list = ['있다', '있는', '통해', '것으로', '대한', '너무', '진짜', '아니고', '위해', '한다', '먼저', '다음으로', '예를', '들면',
@@ -28,9 +28,10 @@ result['text'] = result['text'].apply(str)
 texts = result.text.to_list()
 today_keyword, rank = extract.keyword(extract.preprocessing(texts).split("."), stopwords=stopword_list)
 keywords = []
+
 for text in result.tokenize.tolist():
     keywords.append(extract.keyword_extrator(text, rank=rank, today_keywords=today_keyword))
 result = pd.concat([result, pd.DataFrame(keywords, columns=['keyword'])], axis=1)
 res = summarize.get_summary(texts, "./summary/kobart_summary")
 pd.concat([result, pd.DataFrame(res, columns=['summary'])], axis=1).to_csv('res.csv', encoding='utf-8-sig')
-print('END')
+print("End time :", time.time() - start, 'sec')

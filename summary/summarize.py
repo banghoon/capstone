@@ -3,6 +3,8 @@ import torch
 from kobart import get_kobart_tokenizer
 from transformers.models.bart import BartForConditionalGeneration
 import warnings
+from tqdm import tqdm
+import numpy as np
 
 
 warnings.simplefilter('ignore')
@@ -17,13 +19,19 @@ def get_summary(texts: list, path='./kobart_summary'):
     model = load_model(path)
     tokenizer = get_kobart_tokenizer()
     outputs = []
-    for text_ in texts:
-        text_ = text_.replace('\n', '')[:2000]
-        input_ids = tokenizer.encode(text_)
-        input_ids = torch.tensor(input_ids)
-        input_ids = input_ids.unsqueeze(0)
-        output = model.generate(input_ids, eos_token_id=1, max_length=512, num_beams=5)
-        outputs.append(tokenizer.decode(output[0], skip_special_tokens=True))
+    for text_ in tqdm(texts, desc="news summarize"):
+        if len(text_) <= 100:
+            outputs.append(np.nan)
+            continue
+        try:
+            text_ = text_.replace('\n', '')[:2000]
+            input_ids = tokenizer.encode(text_)
+            input_ids = torch.tensor(input_ids)
+            input_ids = input_ids.unsqueeze(0)
+            output = model.generate(input_ids, eos_token_id=1, max_length=512, num_beams=5)
+            outputs.append(tokenizer.decode(output[0], skip_special_tokens=True))
+        except:
+            outputs.append(np.nan)
     return outputs
 
 
@@ -53,6 +61,6 @@ if __name__ == '__main__':
 중저가 5G 스마트폰 강화도 병행해 매출 성장과 수익성 제고를 추진하며, 태블릿과 웨어러블 사업을 육성하고 선행 기술 개발도 이어간다.
 
 네트워크 분야에서는 해외 사업 성장을 지속하는 동시에 미래 성장을 위해 자체 5G칩으로 하드웨어를 강화하고 소프트웨어 기반의 가상화 솔루션도 강화하기로 했다.
-''']
+''', str(".")]
     res = get_summary(text)
     print(res)
