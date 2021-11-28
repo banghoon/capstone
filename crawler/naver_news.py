@@ -47,7 +47,7 @@ def crawling_news(date, path='C:/Users/bhkim/PycharmProjects/capstone/crawler/ch
 
     driver = webdriver.Chrome(path, options=options)
     datalist = []
-    for path in [str(i) for i in range(100, 101)]: ################################################
+    for path in [str(i) for i in range(100, 106)]:
         url = f'https://news.naver.com/main/list.naver?mode=LSD&mid=sec&date={str(date)}&sid1={str(path)}'
         pages = int(find_last_page(url))
         for page in range(pages):
@@ -94,10 +94,6 @@ def crawling_news(date, path='C:/Users/bhkim/PycharmProjects/capstone/crawler/ch
     print('-------------------END-------------------')
     driver.quit()
     return pd.DataFrame(datalist)
-
-
-def to_sqlite3(cursor):
-    pass
 
 
 if __name__ == '__main__':

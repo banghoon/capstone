@@ -22,7 +22,6 @@ f.close()
 date = "20211104"
 result = crawling_news(date)
 result.drop_duplicates(subset=['text'], ignore_index=True, inplace=True)
-result = result.iloc[:, 1:]
 
 result['text'] = result['text'].apply(str)
 texts = result.text.to_list()
